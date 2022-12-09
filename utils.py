@@ -1,26 +1,57 @@
 import functools
-from typing import Callable, List, TypeVar
-
+from typing import Callable, List, TypeVar, Generator
 
 T = TypeVar('T')
 
 
 def chain(fns, data):
-    for fn in fns:
-        data = fn(data)
-    return data
+    return functools.reduce(lambda prev, nex: nex(prev), fns, data)
 
 
-def split_when(condition: Callable[[T], bool], lst: List[List[T]]):
-    """Split the list into a list of lists according to the condition."""
-    outter = []
+def split_when(
+    condition: Callable[[T], bool],
+    gen: Generator[List[T], None, None]
+) -> List[T]:
+    """Split the list into a generator of lists according to the condition."""
     inner = []
-    for s in lst:
-        if condition(s):
-            outter.append(inner)
+    for item in gen:
+        if condition(item):
+            yield inner
             inner = []
         else:
-            inner.append(s)
+            inner.append(item)
     if len(inner) > 0:
-        outter.append(inner)
-    return outter
+        yield inner
+
+
+def split_when2(
+        condition: Callable[[T], bool],
+        gen: Generator[List[T], None, None]
+):
+    """Split the list into a generator of lists according to the condition."""
+
+    class InnerIter:
+        def __init__(self, outer_gen):
+            self._gen = outer_gen
+        def __next__(self):
+            for val in next(self._gen):
+                if condition(val):
+                    raise StopIteration
+                return val
+        def __iter__(self):
+            return self
+
+    return InnerIter(gen)
+
+
+def recursive_list(generator):
+    lst = []
+    try:
+        for item in generator:
+            if isinstance(item, Generator):
+                lst.append(recursive_list(item))
+            else:
+                lst.append(item)
+    except Exception:
+        pass
+    return lst
