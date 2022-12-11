@@ -4,12 +4,10 @@ from typing import Callable, List, TypeVar, Generator
 T = TypeVar('T')
 
 
-def chain_and_call(functions, data):
-    """Chain the list of functions together, then call them on the data."""
-    return functools.reduce(lambda prev, nex: nex(prev), functions, data)
-
-
 def chain(functions):
+    """Chain the functions together so that they can be called on data later."""
+    def chain_and_call(fcns, data):
+        return functools.reduce(lambda prev, nex: nex(prev), fcns, data)
     return functools.partial(chain_and_call, functions)
 
 

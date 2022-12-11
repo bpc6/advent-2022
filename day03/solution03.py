@@ -1,4 +1,3 @@
-import functools
 from typing import Tuple
 import utils
 
@@ -24,6 +23,6 @@ if __name__ == '__main__':
     filename = 'test.txt'
 
     fcns = [split_string_in_half, find_repeat, priority_of_char]
-    priority_of_line_fcn = functools.partial(utils.chain_and_call, fcns)
+    priority_of_line_fcn = utils.chain(fcns)
     solution1 = sum(map(priority_of_line_fcn, utils.input_gen(filename)))
     print('solution 1:', solution1)
