@@ -1,6 +1,6 @@
 import unittest
 
-from day02.solution import score1, win, selection1, get_outcome
+from day02.solution02 import score1, win, selection1, get_outcome
 
 
 class TestScore(unittest.TestCase):

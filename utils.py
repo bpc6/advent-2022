@@ -4,9 +4,13 @@ from typing import Callable, List, TypeVar, Generator
 T = TypeVar('T')
 
 
-def chain(functions, data):
+def chain_and_call(functions, data):
     """Chain the list of functions together, then call them on the data."""
     return functools.reduce(lambda prev, nex: nex(prev), functions, data)
+
+
+def chain(functions):
+    return functools.partial(chain_and_call, functions)
 
 
 def split_when(
