@@ -4,8 +4,8 @@ import utils
 
 if __name__ == '__main__':
     filename = 'input.txt'
-    stripped_strings = map(lambda s: s.strip('\n'), utils.get_input(filename))
-    list_list_strs = utils.split_when(lambda s: s == '', stripped_strings)
+    input_str_gen = utils.input_gen(filename)
+    list_list_strs = utils.split_when(lambda s: s == '', input_str_gen)
 
     fcns = [lambda list_strs: map(int, list_strs), sum]
     chained_fcn = partial(utils.chain, fcns)

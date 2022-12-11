@@ -4,8 +4,9 @@ from typing import Callable, List, TypeVar, Generator
 T = TypeVar('T')
 
 
-def chain(fns, data):
-    return functools.reduce(lambda prev, nex: nex(prev), fns, data)
+def chain(functions, data):
+    """Chain the list of functions together, then call them on the data."""
+    return functools.reduce(lambda prev, nex: nex(prev), functions, data)
 
 
 def split_when(
@@ -24,7 +25,8 @@ def split_when(
         yield inner
 
 
-def get_input(filename: str) -> Generator[str, None, None]:
+def input_gen(filename: str) -> Generator[str, None, None]:
+    """Create a generator that returns the data line by line."""
     with open(filename, 'r') as f:
         for line in f:
-            yield line
+            yield line.strip('\n')
