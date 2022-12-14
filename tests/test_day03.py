@@ -1,6 +1,6 @@
 import unittest
 
-from day03.solution03 import priority_of_char, find_repeat
+from day03.solution03 import priority_of_char, find_repeat_in_list
 
 
 class TestDay03(unittest.TestCase):
@@ -11,7 +11,18 @@ class TestDay03(unittest.TestCase):
         self.assertEqual(42, priority_of_char('P'))
 
     def test_find_repeat(self):
-        self.assertEqual('P', find_repeat('PmmdzqPrV', 'vPwwTWBwg'))
+        self.assertEqual('P', find_repeat_in_list(['PmmdzqPrV', 'vPwwTWBwg']))
+        strs = [
+            'vJrwpWtwJgWrhcsFMMfFFhFp',
+            'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
+            'PmmdzqPrVvPwwTWBwg'
+        ]
+
+        def gen(strings: list):
+            for s in strings:
+                yield s
+
+        self.assertEqual('r', find_repeat_in_list(gen(strs)))
 
 
 if __name__ == '__main__':

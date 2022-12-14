@@ -1,13 +1,23 @@
 import functools
+from collections.abc import Iterable
 from typing import Callable, List, TypeVar, Generator
 
 T = TypeVar('T')
 
 
 def chain(functions):
-    """Chain the functions together so that they can be called on data later."""
+    """Chain the functions together so that they can be called on data later.
+    Use when inputs are aggregate data types."""
     def chain_and_call(fcns, data):
         return functools.reduce(lambda prev, nex: nex(prev), fcns, data)
+    return functools.partial(chain_and_call, functions)
+
+
+def chain_args(functions):
+    """Chain the functions together so that they can be called on data later.
+    Use when mapping aggregate data to multiple inputs."""
+    def chain_and_call(fcns, *args):
+        return functools.reduce(lambda prev, nex: nex(*prev), fcns, args)
     return functools.partial(chain_and_call, functions)
 
 
@@ -23,6 +33,17 @@ def split_when(
             inner = []
         else:
             inner.append(item)
+    if len(inner) > 0:
+        yield inner
+
+
+def split_by_count(n: int, iterable: Iterable[T]) -> List[T]:
+    inner = []
+    for item in iterable:
+        inner.append(item)
+        if len(inner) == n:
+            yield inner
+            inner = []
     if len(inner) > 0:
         yield inner
 
