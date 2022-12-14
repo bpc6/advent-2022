@@ -14,12 +14,16 @@ def find_repeat_in_list(strs: Iterable[str]) -> str:
     >>> find_repeat_in_list(['cat', 'rat', 'car'])
     'a'
     """
-    def find_repeats_in_2_strings(s0: str, s1: str) -> str:
-        inner = ''
-        for c in s1:
-            if c in s0 and c not in inner:
-                inner += c
-        return inner
+    def find_repeats_in_2_strings(s0: str, s1: str, repeats: str = '') -> str:
+        if s0 == '':
+            return repeats
+        c = s0[0]
+        if c in s1 and c not in repeats:
+            new_repeats = repeats + c
+        else:
+            new_repeats = repeats
+        return find_repeats_in_2_strings(s0[1:], s1, new_repeats)
+
     return functools.reduce(find_repeats_in_2_strings, strs)
 
 
