@@ -1,5 +1,5 @@
 import functools
-from typing import Tuple, List, Iterable
+from typing import List, Iterable
 import utils
 
 
@@ -14,12 +14,13 @@ def find_repeat_in_list(strs: Iterable[str]) -> str:
     >>> find_repeat_in_list(['cat', 'rat', 'car'])
     'a'
     """
-    def find_repeat_in_2_strings(s0: str, s1: str) -> str:
+    def find_repeats_in_2_strings(s0: str, s1: str) -> str:
+        inner = ''
         for c in s1:
-            if c in s0:
-                return c
-        return ''
-    return functools.reduce(find_repeat_in_2_strings, strs)
+            if c in s0 and c not in inner:
+                inner += c
+        return inner
+    return functools.reduce(find_repeats_in_2_strings, strs)
 
 
 def priority_of_char(c: str) -> int:
@@ -29,18 +30,18 @@ def priority_of_char(c: str) -> int:
 
 
 if __name__ == '__main__':
-    filename = 'test.txt'
+    filename = 'input.txt'
 
     fcns = [split_string_in_half, find_repeat_in_list, priority_of_char]
     priority_of_line_fcn1 = utils.chain(fcns)
     solution1 = sum(map(priority_of_line_fcn1, utils.input_gen(filename)))
     print('solution 1:', solution1)
 
+    str_groups = utils.split_by_count(3, utils.input_gen(filename))
     fcns2 = [
-        functools.partial(utils.split_by_count, 3),
         find_repeat_in_list,
         priority_of_char
     ]
     priority_of_line_fcn2 = utils.chain(fcns2)
-    solution2 = sum(map(priority_of_line_fcn2, utils.input_gen(filename)))
+    solution2 = sum(map(priority_of_line_fcn2, str_groups))
     print('solution 2:', solution2)
