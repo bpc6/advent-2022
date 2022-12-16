@@ -1,6 +1,6 @@
 import unittest
 
-from day02.solution02 import score1, win, selection1, get_outcome
+from day02.solution02 import score1, win, read_selection, get_outcome
 
 
 class TestScore(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestScore(unittest.TestCase):
         self.assertEqual(1, win(2, 2))
 
     def test_selection(self):
-        self.assertEqual(1, selection1('B'))
+        self.assertEqual(1, read_selection('B'))
 
     def test_get_outcome(self):
         self.assertEqual(2, get_outcome(1, 2))
