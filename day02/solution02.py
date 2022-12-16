@@ -1,18 +1,13 @@
 import utils
 
 
-def score1(s: str) -> int:
-    """Gets the score of the match given in string s.
-    Expects correct formatting"""
-    them, me = map(selection1, s.split())
-    participation = me + 1
-    win_bonus = 3 * win(me, them)
-    return participation + win_bonus
-
-
 def score2(s: str) -> int:
     them, outcome = map(selection1, s.split())
     me = get_outcome(outcome, them)
+    return total_score(them, me)
+
+
+def total_score(them: int, me: int) -> int:
     participation = me + 1
     win_bonus = 3 * win(me, them)
     return participation + win_bonus
@@ -48,7 +43,8 @@ def get_outcome(outcome: int, them: int) -> int:
 if __name__ == '__main__':
     filename = 'input.txt'
 
-    total_score1 = sum(map(score1, utils.input_gen(filename)))
+    fcn1 = utils.chain_args([lambda s: map(selection1, s.split()), total_score])
+    total_score1 = sum(map(fcn1, utils.input_gen(filename)))
     print('solution 1:', total_score1)
 
     total_score2 = sum(map(score2, utils.input_gen(filename)))
