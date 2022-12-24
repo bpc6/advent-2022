@@ -1,4 +1,5 @@
 import functools
+import re
 from collections.abc import Iterable
 from typing import Callable, List, TypeVar, Generator
 
@@ -53,3 +54,8 @@ def input_gen(filename: str) -> Generator[str, None, None]:
     with open(filename, 'r') as f:
         for line in f:
             yield line.strip('\n')
+
+
+def parse_ints(s: str):
+    """from the string, grab all the ints and put them in a list."""
+    return map(int, re.findall(r'\d+', s))

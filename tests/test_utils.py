@@ -33,5 +33,12 @@ class TestSplitByCount(unittest.TestCase):
         np.testing.assert_array_equal(solution, list(guess))
 
 
+class TestParseInts(unittest.TestCase):
+    def test1(self):
+        s = "hello 4 hi 89\n"
+        correct = [4, 89]
+        np.testing.assert_array_equal(correct, list(utils.parse_ints(s)))
+
+
 if __name__ == '__main__':
     unittest.main()
