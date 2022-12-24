@@ -42,37 +42,28 @@ def first_nonspace(s: str) -> str:
     return ''
 
 
+def build_and_sort(stacks, input_lines, sorting_fcn):
+    for line in input_lines:
+        match first_nonspace(line):
+            case '[':
+                build_stacks(line, stacks)
+            case 'm':
+                utils.chain_args(
+                    [
+                        utils.parse_ints,
+                        lambda a, b, c: (a, b - 1, c - 1),
+                        functools.partial(sorting_fcn, curr_stacks=stacks)
+                    ]
+                )(line)
+    return stacks
+
+
 if __name__ == '__main__':
     filename = 'input.txt'
-    stacks = [[]]
-    for line in utils.input_gen(filename):
-        match first_nonspace(line):
-            case '[':
-                build_stacks(line, stacks)
-            case 'm':
-                utils.chain_args(
-                    [
-                        utils.parse_ints,
-                        lambda a, b, c: (a, b - 1, c - 1),
-                        functools.partial(move_blocks_1_at_time, curr_stacks=stacks)
-                    ]
-                )(line)
-    final = functools.reduce(lambda a, b: a + b.pop(), stacks, '')
-    print(final)
+    stacks = build_and_sort([[]], utils.input_gen(filename), move_blocks_1_at_time)
+    print(functools.reduce(lambda a, b: a + b.pop(), stacks, ''))
 
     # puzzle 2
-    stacks = [[]]
-    for line in utils.input_gen(filename):
-        match first_nonspace(line):
-            case '[':
-                build_stacks(line, stacks)
-            case 'm':
-                utils.chain_args(
-                    [
-                        utils.parse_ints,
-                        lambda a, b, c: (a, b - 1, c - 1),
-                        functools.partial(move_blocks_at_once, curr_stacks=stacks)
-                    ]
-                )(line)
-    final = functools.reduce(lambda a, b: a + b.pop(), stacks, '')
-    print(final)
+    stacks2 = build_and_sort([[]], utils.input_gen(filename), move_blocks_at_once)
+    print(functools.reduce(lambda a, b: a + b.pop(), stacks2, ''))
+
