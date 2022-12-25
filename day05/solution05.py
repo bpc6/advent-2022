@@ -1,17 +1,31 @@
 import functools
-from typing import List
+from typing import List, Tuple
+
 import utils
+from stack import Stack
 
 
 def move_blocks_1_at_time(
     num_to_move: int,
     from_col: int,
     to_col: int,
-    curr_stacks: List[List[str]]
-) -> List[List[str]]:
-    for _ in range(num_to_move):
-        curr_stacks[to_col].append(curr_stacks[from_col].pop())
-    return curr_stacks
+    curr_stacks: List[Tuple[str]]
+) -> List[Tuple[str]]:
+    if num_to_move == 0:
+        return curr_stacks
+
+    popped, from_stack = Stack[str].pop(curr_stacks[from_col])
+    to_stack = Stack[str].push(popped, curr_stacks[to_col])
+
+    new_stacks = []
+    for idx in range(len(curr_stacks)):
+        if idx == from_col:
+            new_stacks.append(from_stack)
+        elif idx == to_col:
+            new_stacks.append(to_stack)
+        else:
+            new_stacks.append(curr_stacks[idx])
+    return move_blocks_1_at_time(num_to_move - 1, from_col, to_col, new_stacks)
 
 
 def move_blocks_at_once(
@@ -46,9 +60,10 @@ def build_and_sort(stacks, input_lines, sorting_fcn):
     for line in input_lines:
         match first_nonspace(line):
             case '[':
-                build_stacks(line, stacks)
+                stacks = build_stacks(line, stacks)
             case 'm':
-                utils.chain_args(
+                stacks = [tuple(s) for s in stacks]
+                stacks = utils.chain_args(
                     [
                         utils.parse_ints,
                         lambda a, b, c: (a, b - 1, c - 1),
@@ -59,11 +74,11 @@ def build_and_sort(stacks, input_lines, sorting_fcn):
 
 
 if __name__ == '__main__':
-    filename = 'input.txt'
+    filename = 'test.txt'
     stacks = build_and_sort([[]], utils.input_gen(filename), move_blocks_1_at_time)
-    print(functools.reduce(lambda a, b: a + b.pop(), stacks, ''))
+    print(functools.reduce(lambda a, b: a + Stack[str].pop(b)[0], stacks, ''))
 
     # puzzle 2
-    stacks2 = build_and_sort([[]], utils.input_gen(filename), move_blocks_at_once)
-    print(functools.reduce(lambda a, b: a + b.pop(), stacks2, ''))
+    # stacks2 = build_and_sort([[]], utils.input_gen(filename), move_blocks_at_once)
+    # print(functools.reduce(lambda a, b: a + b.pop(), stacks2, ''))
 
