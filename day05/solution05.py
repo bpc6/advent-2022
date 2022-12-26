@@ -64,20 +64,21 @@ def first_nonspace(s: str) -> str:
 
 
 def build_and_sort(stacks, input_lines, sorting_fcn):
-    for line in input_lines:
-        match first_nonspace(line):
-            case '[':
-                stacks = build_stacks(line, stacks)
-            case 'm':
-                stacks = [tuple(s) for s in stacks]
-                stacks = utils.chain_args(
-                    [
-                        utils.parse_ints,
-                        lambda a, b, c: (a, b - 1, c - 1),
-                        functools.partial(sorting_fcn, curr_stacks=stacks)
-                    ]
-                )(line)
-    return stacks
+    line = input_lines.__next__()
+    match first_nonspace(line):
+        case '[':
+            new_stacks = build_stacks(line, stacks)
+        case 'm':
+            new_stacks = utils.chain_args(
+                [
+                    utils.parse_ints,
+                    lambda a, b, c: (a, b - 1, c - 1),
+                    functools.partial(sorting_fcn, curr_stacks=tuple(stacks))
+                ]
+            )(line)
+        case _:
+            new_stacks = stacks
+    return build_and_sort(new_stacks, input_lines, sorting_fcn)
 
 
 if __name__ == '__main__':
