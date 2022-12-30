@@ -64,7 +64,11 @@ def first_nonspace(s: str) -> str:
 
 
 def build_and_sort(stacks, input_lines, sorting_fcn):
-    line = input_lines.__next__()
+    try:
+        line = input_lines.__next__()
+    except StopIteration:
+        return stacks
+
     match first_nonspace(line):
         case '[':
             new_stacks = build_stacks(line, stacks)
@@ -82,7 +86,7 @@ def build_and_sort(stacks, input_lines, sorting_fcn):
 
 
 if __name__ == '__main__':
-    filename = 'test.txt'
+    filename = 'input.txt'
     stacks = build_and_sort(tuple(), utils.input_gen(filename), move_blocks_1_at_time)
     print(functools.reduce(lambda a, b: a + Stack[str].pop(b)[0], stacks, ''))
 
