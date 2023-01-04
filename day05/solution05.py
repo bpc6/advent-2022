@@ -35,11 +35,21 @@ def move_blocks_at_once(
     num_to_move: int,
     from_col: int,
     to_col: int,
-    curr_stacks: List[List[str]]
-) -> List[List[str]]:
-    curr_stacks[to_col] += curr_stacks[from_col][-num_to_move:]
-    curr_stacks[from_col] = curr_stacks[from_col][:-num_to_move]
-    return curr_stacks
+    curr_stacks: Tuple[Tuple[str]]
+) -> Tuple[Tuple[str]]:
+    popped = curr_stacks[from_col][-num_to_move:]
+    from_stack = curr_stacks[from_col][:-num_to_move]
+    to_stack = curr_stacks[to_col] + popped
+
+    def place_stack(idx: int) -> Tuple[str]:
+        if idx == from_col:
+            return from_stack
+        elif idx == to_col:
+            return to_stack
+        else:
+            return curr_stacks[idx]
+
+    return tuple(map(place_stack, range(len(curr_stacks))))
 
 
 def build_stacks(s: str, curr_stacks):
@@ -91,6 +101,6 @@ if __name__ == '__main__':
     print(functools.reduce(lambda a, b: a + Stack[str].pop(b)[0], stacks, ''))
 
     # puzzle 2
-    # stacks2 = build_and_sort([[]], utils.input_gen(filename), move_blocks_at_once)
-    # print(functools.reduce(lambda a, b: a + b.pop(), stacks2, ''))
+    stacks2 = build_and_sort(tuple(), utils.input_gen(filename), move_blocks_at_once)
+    print(functools.reduce(lambda a, b: a + Stack[str].pop(b)[0], stacks2, ''))
 
